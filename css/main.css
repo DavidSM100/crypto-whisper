@@ -1,0 +1,39 @@
+#headerDiv {
+  margin: 5px;
+}
+
+.chat-div {
+  border: 2px solid;
+  border-left: none;
+  border-right: none;
+  padding: 5px;
+}
+
+.user-name {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.send-form input {
+  width: 80%;
+  border: 2px solid;
+}
+
+.send-form button {
+  width: 10%;
+  margin: 5px;
+}
+
+.msg {
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.msg div {
+  background-color: #ddd;
+  border-radius: 6px;
+  padding: 5px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
