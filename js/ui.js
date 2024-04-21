@@ -53,8 +53,8 @@ export function newMsg(text) {
   let msg = $new("div");
   msg.classList.add("msg");
   let msgText = $new("div");
-  msgText.innerHTML = text;
-  msgText.addEventListener("click", () => copy(text));
+  msgText.textContent = text;
+  msgText.onclick = () => copy(text);
   msg.append(msgText);
 
   return msg;

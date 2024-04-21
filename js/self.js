@@ -1,11 +1,16 @@
 import getRGB from "consistent-color-generation";
 import localforage from "localforage";
-import { createKeys } from "./crypto.js";
+import { createKeys, randomId } from "./crypto.js";
+
+let webxdc = window.webxdc;
+
+let xdcName = webxdc.selfName;
+let xdcAddr = webxdc.selfAddr;
 
 export function getSelfId() {
   let savedid = localStorage.getItem("id");
   let newId = () => {
-    let id = crypto.randomUUID();
+    let id = randomId();
     localStorage.setItem("id", id);
     return id;
   };
@@ -14,13 +19,13 @@ export function getSelfId() {
 }
 
 export function getSelfName() {
-  let name = window.webxdc.selfName;
-  if (name == window.webxdc.selfAddr) name = "Anonymous";
+  let name = xdcName;
+  if (name == xdcAddr) name = "Anonymous";
   return name;
 }
 
 export function getSelfColor() {
-  return getRGB(window.webxdc.selfAddr).toString();
+  return getRGB(xdcAddr).toString();
 }
 
 export async function getSelfKeys() {
@@ -31,6 +36,5 @@ export async function getSelfKeys() {
     return keys;
   };
 
-  let keys = savedKeys || (await newKeys());
-  return keys;
+  return savedKeys || (await newKeys());
 }

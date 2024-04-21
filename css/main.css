@@ -3,7 +3,8 @@
 }
 
 .chat-div {
-  border: 2px solid;
+  margin-bottom: 2px;
+  border: 4px solid;
   border-left: none;
   border-right: none;
   padding: 5px;
@@ -20,7 +21,6 @@
 }
 
 .send-form button {
-  width: 10%;
   margin: 5px;
 }
 
