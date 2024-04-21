@@ -1,2 +1,3 @@
-name = "SecureChat"
-source_code_url = "https://github.com/DavidSM100/secure-chat"
+name = "CryptoWhisper"
+source_code_url = "https://github.com/DavidSM100/crypto-whisper"
+description = "Simple chat app using end-to-end encryption to allow private chats in anonymous groups."

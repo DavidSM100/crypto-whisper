@@ -1,8 +1,10 @@
 {
 	"scripts": {
-		"serve": "vite serve --port 3000",
+    "serve": "vite serve --port 3000",
+    "build": "vite build",
+		"vite-dev": "vite serve --config ./dev/vite.config.js --port 3000",
 		"webxdc-dev": "webxdc-dev run http://localhost:3000",
-		"build": "vite build"
+    "dev-build": "./dev/dev-build.sh"
 	},
 	"devDependencies": {
 		"eruda": "^3.0.1",
