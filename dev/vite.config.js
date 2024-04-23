@@ -63,7 +63,7 @@ export default defineConfig(({ command }) => {
           },
         }),
         zipPack({
-          outDir: "./dev",
+          outDir: "./dist",
           outFileName: appName + "-dev" + ".xdc",
         }),
       ],

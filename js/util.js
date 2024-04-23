@@ -10,10 +10,16 @@ export let arrayBufferToBase64 = (arrayBuffer) => encode(arrayBuffer);
 export let base64ToArrayBuffer = (base64) => decode(base64);
 
 export function copy(text) {
-  const temp = document.createElement("textarea");
-  temp.innerText = text;
-  document.body.appendChild(temp);
-  temp.select();
+  let textarea = document.createElement("textarea");
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  textarea.select();
   document.execCommand("copy");
-  document.body.removeChild(temp);
+  document.body.removeChild(textarea);
+}
+
+
+export function autoResize(element) {
+  element.style.height = "auto";
+  element.style.height = (element.scrollHeight - 10) + "px";
 }

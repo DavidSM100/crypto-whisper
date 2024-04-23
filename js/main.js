@@ -9,18 +9,16 @@ import {
   base64ToArrayBuffer,
 } from "./util.js";
 
-let webxdc = window.webxdc;
-
 let users = {};
 
-let selfId = getSelfId();
 let selfKeys = getSelfKeys();
+let selfId = getSelfId();
 let selfName = getSelfName();
 let selfColor = getSelfColor();
 
 $("sendRequestBtn").onclick = sendRequest;
 
-webxdc.setUpdateListener((update) => handleIncomingUpdate(update));
+window.webxdc.setUpdateListener((update) => handleIncomingUpdate(update));
 
 async function handleIncomingUpdate(update) {
   let payload = update.payload;
@@ -48,13 +46,14 @@ async function handleIncomingUpdate(update) {
       position = "end";
     }
 
-    let chat = getChat(chatId);
+    getChat(chatId);
 
     let decryptedMsg = await decryptText(encryptedMsg, privateKey);
     let msg = newMsg(decryptedMsg);
     msg.style.justifyContent = "flex-" + position;
 
-    chat.append(msg);
+    let chatMsgs = $(chatId + "-msgs");
+    chatMsgs.append(msg);
   } else {
     if (senderId != selfId) getChat(senderId);
   }
@@ -63,7 +62,7 @@ async function handleIncomingUpdate(update) {
     let chat = $(id);
     if (!chat) {
       let user = users[id];
-      chat = newChat(id, user.key, user.name, user.color);
+      chat = newChat(id, user.key, user.name, user.color);  
       $("chatsDiv").append(chat);
     }
 
@@ -75,7 +74,7 @@ async function sendRequest() {
   let publicKey = (await selfKeys).publicKey;
   let jsonWebKey = await exportKey(publicKey);
 
-  let descr = `${selfName} is requesting to chat`;
+  let descr = selfName + " is requesting a private chat";
   let update = {
     payload: {
       type: "request",
@@ -89,12 +88,13 @@ async function sendRequest() {
     info: descr,
   };
 
-  webxdc.sendUpdate(update, descr);
+  window.webxdc.sendUpdate(update, descr);
   $("headerDiv").innerHTML =
     "<small>Request sent, wait for others to respond.</small>";
 }
 
 export async function sendMsg(userId, userKey, text) {
+  console.log(text)
   let myPublicKey = (await selfKeys).publicKey;
 
   let encryptedMsg = await encryptText(text, userKey);
@@ -121,7 +121,8 @@ export async function sendMsg(userId, userKey, text) {
 
   let descr = `${selfName} is sending a message`;
 
-  webxdc.sendUpdate(update, descr);
+  window.webxdc.sendUpdate(update, descr);
+  return true;
 }
 
 async function encryptText(text, key) {
@@ -141,7 +142,6 @@ async function decryptText(encryptedText, key) {
     let encryptedArrayBuffer = base64ToArrayBuffer(encryptedText);
     let decryptedArrayBuffer = await decrypt(encryptedArrayBuffer, key);
     let text = arrayBufferToText(decryptedArrayBuffer);
-
     return text;
   } catch {
     return "This message could not be decrypted";

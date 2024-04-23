@@ -2,8 +2,6 @@ import getRGB from "consistent-color-generation";
 import localforage from "localforage";
 import { createKeys, randomId } from "./crypto.js";
 
-let webxdc = window.webxdc;
-
 let xdcName = webxdc.selfName;
 let xdcAddr = webxdc.selfAddr;
 
