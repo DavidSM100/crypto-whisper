@@ -39,8 +39,9 @@ img {
   vertical-align: middle;
 }
 
-#headerDiv {
+#sendRequestDiv {
   margin: 5px;
+  text-align: center;
 }
 
 .chat-div {

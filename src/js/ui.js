@@ -1,4 +1,4 @@
-import { $new, autoResize, copy } from "./util.js";
+import { $new, copy } from "./util.js";
 import { importKey } from "./crypto.js";
 import { sendMsg } from "./main.js";
 
@@ -80,4 +80,14 @@ export function newMsg(text) {
   msg.append(msgText);
 
   return msg;
+}
+
+
+/**
+ * 
+ * @param {HTMLTextAreaElement} element 
+ */
+export function autoResize(textarea) {
+  textarea.style.height = "auto";
+  textarea.style.height = (textarea.scrollHeight - 10) + "px";
 }

@@ -1,13 +1,8 @@
 import { getSelfId, getSelfName, getSelfColor, getSelfKeys } from "./self.js";
 import { exportKey, encrypt, decrypt } from "./crypto.js";
 import { newChat, newMsg } from "./ui.js";
-import {
-  $,
-  textToArrayBuffer,
-  arrayBufferToText,
-  arrayBufferToBase64,
-  base64ToArrayBuffer,
-} from "./util.js";
+import { $ } from "./util.js";
+import { encode as arrayBufferToBase64, decode as base64ToArrayBuffer } from "base64-arraybuffer";
 
 let users = {};
 
@@ -74,7 +69,7 @@ async function sendRequest() {
   const publicKey = (await selfKeys).publicKey;
   const jsonWebKey = await exportKey(publicKey);
 
-  const descr = selfName + " is requesting a private chat";
+  const descr = selfName + " is requesting a private chat.";
   const update = {
     payload: {
       type: "request",
@@ -89,7 +84,7 @@ async function sendRequest() {
   };
 
   window.webxdc.sendUpdate(update, descr);
-  $("headerDiv").innerHTML =
+  $("sendRequestDiv").innerHTML =
     "<small>Request sent, wait for others to respond.</small>";
 }
 
@@ -138,10 +133,9 @@ export async function sendMsg(userId, userKey, text) {
  */
 async function encryptText(text, key) {
   try {
-    const arrayBuffer = textToArrayBuffer(text);
-    const encryptedArrayBuffer = await encrypt(arrayBuffer, key);
-    const base64 = arrayBufferToBase64(encryptedArrayBuffer);
-
+    const uint8Array = new TextEncoder().encode(text);
+    const encrypted = await encrypt(uint8Array, key);
+    const base64 = arrayBufferToBase64(encrypted);
     return base64;
   } catch (err) {
     console.log(err);
@@ -151,18 +145,18 @@ async function encryptText(text, key) {
 
 /**
  * 
- * @param {string} encryptedText 
+ * @param {string} base64 
  * @param {CryptoKey} key 
  * @returns {string}
  */
-async function decryptText(encryptedText, key) {
+async function decryptText(base64, key) {
   try {
-    const encryptedArrayBuffer = base64ToArrayBuffer(encryptedText);
-    const decryptedArrayBuffer = await decrypt(encryptedArrayBuffer, key);
-    const text = arrayBufferToText(decryptedArrayBuffer);
+    const encrypted = base64ToArrayBuffer(base64);
+    const arrayBuffer = await decrypt(encrypted, key);
+    const text = new TextDecoder().decode(arrayBuffer);
     return text;
-  } catch (err){
-    console.log(err)
-    return "This message could not be decrypted";
+  } catch (err) {
+    console.log(err);
+    return `This message could not be decrypted, error:\n${err}`;
   }
 }

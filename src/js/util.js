@@ -1,4 +1,3 @@
-import { encode, decode } from "base64-arraybuffer";
 /**
  * 
  * @param {string} id 
@@ -29,20 +28,6 @@ export const arrayBufferToText = (arrayBuffer) => new TextDecoder().decode(array
 
 /**
  * 
- * @param {ArrayBuffer} arrayBuffer 
- * @returns {string}
- */
-export const arrayBufferToBase64 = (arrayBuffer) => encode(arrayBuffer);
-
-/**
- * 
- * @param {string} base64 
- * @returns {ArrayBuffer}
- */
-export const base64ToArrayBuffer = (base64) => decode(base64);
-
-/**
- * 
  * @param {string} text 
  */
 export function copy(text) {
@@ -52,13 +37,4 @@ export function copy(text) {
   textarea.select();
   document.execCommand("copy");
   document.body.removeChild(textarea);
-}
-
-/**
- * 
- * @param {HTMLTextAreaElement} element 
- */
-export function autoResize(element) {
-  element.style.height = "auto";
-  element.style.height = (element.scrollHeight - 10) + "px";
 }
