@@ -5,7 +5,42 @@ const rsaAlgorithm = {
   hash: "SHA-256",
 }
 
-export const randomId = () => crypto.randomUUID();
+export function randomId() {
+    if (!crypto.randomUUID) {
+        const randarray = new Uint8Array(16)
+        crypto.getRandomValues(randarray)
+
+        let hexvalues = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
+        let newUuidString = "";
+
+        for (let i = 0; i < 16; i++) {
+            let num = randarray[i]
+            let highNibble = Math.floor(num / 16)
+            let lowNibble = num % 16
+
+            if (i === 6) {
+                newUuidString += "4"
+            } else if (i === 8) {
+                highNibble = highNibble & 0b0011
+                highNibble = highNibble | 0b1000
+                newUuidString += hexvalues[highNibble]
+            } else {
+                newUuidString += hexvalues[highNibble]
+            }
+
+            newUuidString += hexvalues[lowNibble]
+
+            if (i === 3 || i === 5 || i === 7 || i === 9) {
+                newUuidString += "-"
+            }
+        }
+
+        return newUuidString;
+    } else {
+        return crypto.randomUUID();
+    }
+}
+
 
 /**
  * 
