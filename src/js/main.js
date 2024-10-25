@@ -11,19 +11,19 @@ import {
 
 let users = {};
 
-let selfKeys = getSelfKeys();
-let selfId = getSelfId();
-let selfName = getSelfName();
-let selfColor = getSelfColor();
+const selfKeys = getSelfKeys();
+const selfId = getSelfId();
+const selfName = getSelfName();
+const selfColor = getSelfColor();
 
 $("sendRequestBtn").onclick = sendRequest;
 
 window.webxdc.setUpdateListener((update) => handleIncomingUpdate(update));
 
 async function handleIncomingUpdate(update) {
-  let payload = update.payload;
-  let sender = payload.self;
-  let senderId = sender.id;
+  const payload = update.payload;
+  const sender = payload.self;
+  const senderId = sender.id;
 
   users[senderId] = {
     key: sender.key,
@@ -31,9 +31,9 @@ async function handleIncomingUpdate(update) {
     color: sender.color,
   };
 
-  let msgTo = payload.to;
+  const msgTo = payload.to;
   if (payload.type == "msg" && (msgTo == selfId || senderId == selfId)) {
-    let privateKey = (await selfKeys).privateKey;
+    const privateKey = (await selfKeys).privateKey;
 
     let chatId, encryptedMsg, position;
     if (msgTo == selfId) {
@@ -48,7 +48,7 @@ async function handleIncomingUpdate(update) {
 
     getChat(chatId);
 
-    let decryptedMsg = await decryptText(encryptedMsg, privateKey);
+    const decryptedMsg = await decryptText(encryptedMsg, privateKey);
     let msg = newMsg(decryptedMsg);
     msg.style.justifyContent = "flex-" + position;
 
@@ -61,8 +61,8 @@ async function handleIncomingUpdate(update) {
   function getChat(id) {
     let chat = $(id);
     if (!chat) {
-      let user = users[id];
-      chat = newChat(id, user.key, user.name, user.color);  
+      const user = users[id];
+      chat = newChat(id, user.key, user.name, user.color);
       $("chatsDiv").append(chat);
     }
 
@@ -71,11 +71,11 @@ async function handleIncomingUpdate(update) {
 }
 
 async function sendRequest() {
-  let publicKey = (await selfKeys).publicKey;
-  let jsonWebKey = await exportKey(publicKey);
+  const publicKey = (await selfKeys).publicKey;
+  const jsonWebKey = await exportKey(publicKey);
 
-  let descr = selfName + " is requesting a private chat";
-  let update = {
+  const descr = selfName + " is requesting a private chat";
+  const update = {
     payload: {
       type: "request",
       self: {
@@ -93,18 +93,23 @@ async function sendRequest() {
     "<small>Request sent, wait for others to respond.</small>";
 }
 
+/**
+ * 
+ * @param {string} userId 
+ * @param {CryptoKey} userKey 
+ * @param {string} text 
+ */
 export async function sendMsg(userId, userKey, text) {
-  console.log(text)
-  let myPublicKey = (await selfKeys).publicKey;
+  const myPublicKey = (await selfKeys).publicKey;
 
-  let encryptedMsg = await encryptText(text, userKey);
+  const encryptedMsg = await encryptText(text, userKey);
   if (!encryptedMsg) return;
-  let selfEncryptedCopy = await encryptText(text, myPublicKey);
+  const selfEncryptedCopy = await encryptText(text, myPublicKey);
   if (!selfEncryptedCopy) return;
 
-  let myJsonWebKey = await exportKey(myPublicKey);
+  const myJsonWebKey = await exportKey(myPublicKey);
 
-  let update = {
+  const update = {
     payload: {
       type: "msg",
       msg: encryptedMsg,
@@ -119,31 +124,45 @@ export async function sendMsg(userId, userKey, text) {
     },
   };
 
-  let descr = `${selfName} is sending a message`;
+  const descr = `${selfName} is sending a message`;
 
   window.webxdc.sendUpdate(update, descr);
   return true;
 }
 
+/**
+ * 
+ * @param {string} text 
+ * @param {CryptoKey} key 
+ * @returns {string}
+ */
 async function encryptText(text, key) {
   try {
-    let arrayBuffer = textToArrayBuffer(text);
-    let encryptedArrayBuffer = await encrypt(arrayBuffer, key);
-    let base64 = arrayBufferToBase64(encryptedArrayBuffer);
+    const arrayBuffer = textToArrayBuffer(text);
+    const encryptedArrayBuffer = await encrypt(arrayBuffer, key);
+    const base64 = arrayBufferToBase64(encryptedArrayBuffer);
 
     return base64;
-  } catch {
-    alert("Message too long");
+  } catch (err) {
+    console.log(err);
+    alert(err);
   }
 }
 
+/**
+ * 
+ * @param {string} encryptedText 
+ * @param {CryptoKey} key 
+ * @returns {string}
+ */
 async function decryptText(encryptedText, key) {
   try {
-    let encryptedArrayBuffer = base64ToArrayBuffer(encryptedText);
-    let decryptedArrayBuffer = await decrypt(encryptedArrayBuffer, key);
-    let text = arrayBufferToText(decryptedArrayBuffer);
+    const encryptedArrayBuffer = base64ToArrayBuffer(encryptedText);
+    const decryptedArrayBuffer = await decrypt(encryptedArrayBuffer, key);
+    const text = arrayBufferToText(decryptedArrayBuffer);
     return text;
-  } catch {
+  } catch (err){
+    console.log(err)
     return "This message could not be decrypted";
   }
 }

@@ -1,55 +1,71 @@
-let rsaAlgorithm = () => {
-  return {
-    name: "RSA-OAEP",
-    modulusLength: 2048,
-    publicExponent: new Uint8Array([1, 0, 1]),
-    hash: "SHA-256",
-  };
-};
+const rsaAlgorithm = {
+  name: "RSA-OAEP",
+  modulusLength: 2048,
+  publicExponent: new Uint8Array([1, 0, 1]),
+  hash: "SHA-256",
+}
 
-export let randomId = () => crypto.randomUUID();
+export const randomId = () => crypto.randomUUID();
 
+/**
+ * 
+ * @returns {Promise<CryptoKeyPair>}
+ */
 export async function createKeys() {
-  let keys = await crypto.subtle.generateKey(rsaAlgorithm(), true, [
+  return await crypto.subtle.generateKey(rsaAlgorithm, true, [
     "encrypt",
     "decrypt",
   ]);
-
-  return keys;
 }
 
+/**
+ * 
+ * @param {CryptoKey} key 
+ * @returns {Promise<JsonWebKey>}
+ */
 export async function exportKey(key) {
   return crypto.subtle.exportKey("jwk", key);
 }
 
+/**
+ * 
+ * @param {JsonWebKey} jsonWebKey 
+ * @returns {Promise<CryptoKey>}
+ */
 export async function importKey(jsonWebKey) {
-  let key = await crypto.subtle.importKey(
+  return await crypto.subtle.importKey(
     "jwk",
     jsonWebKey,
-    rsaAlgorithm(),
+    rsaAlgorithm,
     true,
     ["encrypt"],
   );
-
-  return key;
 }
 
-export async function encrypt(arrayBuffer, key) {
-  let encryptedArrayBuffer = await crypto.subtle.encrypt(
+/**
+ * 
+ * @param {ArrayBuffer} data 
+ * @param {CryptoKey} key 
+ * @returns {Promise<ArrayBuffer>}
+ */
+export async function encrypt(data, key) {
+  return await crypto.subtle.encrypt(
     { name: "RSA-OAEP" },
     key,
-    arrayBuffer,
+    data,
   );
-
-  return encryptedArrayBuffer;
 }
 
-export async function decrypt(encryptedArrayBuffer, key) {
-  let decryptedArrayBuffer = await crypto.subtle.decrypt(
+/**
+ * 
+ * @param {ArrayBuffer} encryptedData 
+ * @param {CryptoKey} key 
+ * @returns {Promise<ArrayBuffer>}
+ */
+export async function decrypt(encryptedData, key) {
+  return await crypto.subtle.decrypt(
     { name: "RSA-OAEP" },
     key,
-    encryptedArrayBuffer,
+    encryptedData,
   );
-
-  return decryptedArrayBuffer;
 }

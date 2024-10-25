@@ -1,16 +1,52 @@
 import { encode, decode } from "base64-arraybuffer";
+/**
+ * 
+ * @param {string} id 
+ * @returns {HTMLElement | null}
+ */
+export const $ = (id) => document.getElementById(id);
 
-export let $ = (id) => document.getElementById(id);
-export let $new = (tag) => document.createElement(tag);
+/**
+ * 
+ * @param {string} tag 
+ * @returns {HTMLElement}
+ */
+export const $new = (tag) => document.createElement(tag);
 
-export let textToArrayBuffer = (text) => new TextEncoder().encode(text);
-export let arrayBufferToText = (arrayBuffer) => new TextDecoder().decode(arrayBuffer);
+/**
+ * 
+ * @param {string} text 
+ * @returns {ArrayBuffer}
+ */
+export const textToArrayBuffer = (text) => new TextEncoder().encode(text);
 
-export let arrayBufferToBase64 = (arrayBuffer) => encode(arrayBuffer);
-export let base64ToArrayBuffer = (base64) => decode(base64);
+/**
+ * 
+ * @param {ArrayBuffer} arrayBuffer 
+ * @returns {string}
+ */
+export const arrayBufferToText = (arrayBuffer) => new TextDecoder().decode(arrayBuffer);
 
+/**
+ * 
+ * @param {ArrayBuffer} arrayBuffer 
+ * @returns {string}
+ */
+export const arrayBufferToBase64 = (arrayBuffer) => encode(arrayBuffer);
+
+/**
+ * 
+ * @param {string} base64 
+ * @returns {ArrayBuffer}
+ */
+export const base64ToArrayBuffer = (base64) => decode(base64);
+
+/**
+ * 
+ * @param {string} text 
+ */
 export function copy(text) {
-  let textarea = document.createElement("textarea");
+  const textarea = document.createElement("textarea");
   textarea.value = text;
   document.body.appendChild(textarea);
   textarea.select();
@@ -18,7 +54,10 @@ export function copy(text) {
   document.body.removeChild(textarea);
 }
 
-
+/**
+ * 
+ * @param {HTMLTextAreaElement} element 
+ */
 export function autoResize(element) {
   element.style.height = "auto";
   element.style.height = (element.scrollHeight - 10) + "px";

@@ -2,20 +2,23 @@ import getRGB from "consistent-color-generation";
 import localforage from "localforage";
 import { createKeys, randomId } from "./crypto.js";
 
-let xdcName = webxdc.selfName;
-let xdcAddr = webxdc.selfAddr;
+const xdcName = webxdc.selfName;
+const xdcAddr = webxdc.selfAddr;
 
 export function getSelfId() {
-  let savedid = localStorage.getItem("id");
-  let newId = () => {
-    let id = randomId();
+  let id = localStorage.getItem("id");
+  if (!id) {
+    id = randomId();
     localStorage.setItem("id", id);
-    return id;
-  };
+  }
 
-  return savedid || newId();
+  return id;
 }
 
+/**
+ * 
+ * @returns {string}
+ */
 export function getSelfName() {
   let name = xdcName;
   if (name == xdcAddr) name = "Anonymous";
@@ -26,13 +29,16 @@ export function getSelfColor() {
   return getRGB(xdcAddr).toString();
 }
 
+/**
+ * 
+ * @returns {Promise<CryptoKeyPair>}
+ */
 export async function getSelfKeys() {
-  let savedKeys = await localforage.getItem("keys");
-  let newKeys = async () => {
-    let keys = await createKeys();
-    localforage.setItem("keys", keys);
-    return keys;
-  };
+  let keys = await localforage.getItem("keys");
+  if (!keys) {
+    keys = await createKeys();
+    await localforage.setItem("keys", keys);
+  }
 
-  return savedKeys || (await newKeys());
+  return keys;
 }

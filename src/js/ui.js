@@ -3,7 +3,7 @@ import { importKey } from "./crypto.js";
 import { sendMsg } from "./main.js";
 
 export function newChat(userId, userJsonKey, userName, userColor) {
-  let userKey = importKey(userJsonKey);
+  const userKey = importKey(userJsonKey);
 
   let chatDiv = $new("div");
   chatDiv.id = userId;
@@ -48,10 +48,10 @@ export function newChat(userId, userJsonKey, userName, userColor) {
 
   sendButton.onclick = async (event) => {
     event.preventDefault();
-    let key = await userKey;
-    let msg = sendTextarea.value.trim();
+    const key = await userKey;
+    const msg = sendTextarea.value.trim();
     if (msg) {
-      let msgSent = await sendMsg(userId, key, msg);
+      const msgSent = await sendMsg(userId, key, msg);
       if (msgSent) {
         sendTextarea.value = "";
         autoResize(sendTextarea);
@@ -75,7 +75,6 @@ export function newMsg(text) {
 
   let msgText = $new("div");
   msgText.innerText = text;
-
   msgText.onclick = () => copy(text);
 
   msg.append(msgText);
